@@ -1,0 +1,1 @@
+Machine learning is a subset of artificial intelligence that enables systems to learn from experience without explicit programming. The application of supervised learning algorithms in medical diagnosis has shown remarkable accuracy. Deep learning techniques are particularly effective in image recognition tasks, outperforming traditional computer vision methods significantly.

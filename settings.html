@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - DetectPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#f4f7fb', 100: '#e1eaf4', 500: '#2563eb', 600: '#1d4ed8', 900: '#1e3a8a' },
+                    },
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; background-color: #f8fafc; }
+    </style>
+</head>
+<body class="text-slate-900 dark:bg-slate-900 dark:text-white min-h-screen flex flex-col transition-colors duration-300">
+
+    <nav class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="location.href='dashboard.html'">
+                    <div class="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center text-white">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <span class="font-bold text-xl tracking-tight text-slate-900 dark:text-white">DetectPro</span>
+                </div>
+                
+                <div class="hidden md:ml-6 md:flex md:space-x-8 items-center">
+                    <a href="dashboard.html" class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-bold px-1 py-2 border-b-2 border-transparent transition-colors">Dashboard</a>
+                    <a href="demo.html" class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-bold px-1 py-2 border-b-2 border-transparent transition-colors">Demo</a>
+                    <a href="checker.html" class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-bold px-1 py-2 border-b-2 border-transparent transition-colors">Checker</a>
+                    <a href="reports.html" class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-bold px-1 py-2 border-b-2 border-transparent transition-colors">History</a>
+                    <a href="settings.html" class="text-primary-600 dark:text-primary-400 font-bold px-1 py-2 border-b-2 border-primary-600 transition-colors">Settings</a>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <button onclick="document.documentElement.classList.toggle('dark')" class="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white transition-colors">
+                        <i class="fa-solid fa-moon dark:hidden text-lg"></i>
+                        <i class="fa-solid fa-sun hidden dark:block text-lg"></i>
+                    </button>
+                    <div class="flex items-center gap-2 pl-4 border-l border-slate-200 dark:border-slate-700 cursor-pointer">
+                        <div class="w-8 h-8 rounded-full bg-primary-100 dark:bg-slate-800 flex items-center justify-center text-primary-600 font-black text-sm" id="user-initial">U</div>
+                        <span class="text-sm font-bold hidden sm:block" id="user-name-display">User</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-1 flex flex-col bg-slate-50 dark:bg-slate-900 p-4 md:p-8">
+        <div class="max-w-4xl mx-auto w-full">
+            <h2 class="text-3xl font-black mb-8">Account Settings</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="md:col-span-1 space-y-4">
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm text-center">
+                        <div class="w-24 h-24 rounded-full bg-primary-100 dark:bg-slate-700 text-primary-600 mx-auto flex items-center justify-center text-4xl font-black mb-4" id="settings-avatar">U</div>
+                        <h3 class="text-xl font-bold" id="settings-name">Name</h3>
+                        <p class="text-sm text-slate-500 font-medium" id="settings-email">email</p>
+                        <span class="inline-block mt-3 px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full uppercase tracking-wider">Faculty License</span>
+                    </div>
+                    <button onclick="logout()" class="w-full py-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl font-bold transition-colors border border-red-200">Log Out</button>
+                </div>
+
+                <div class="md:col-span-2 space-y-6">
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <h3 class="text-lg font-black mb-6 border-b border-slate-100 dark:border-slate-700 pb-3">Personal Details</h3>
+                        <form onsubmit="event.preventDefault(); alert('Profile updated locally!');" class="space-y-5">
+                            <div>
+                                <label class="block text-xs font-bold mb-2 uppercase tracking-wide text-slate-500">Full Name</label>
+                                <input id="form-name" type="text" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none" required>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold mb-2 uppercase tracking-wide text-slate-500">University Email</label>
+                                <input id="form-email" type="email" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none opacity-70 cursor-not-allowed" readonly>
+                                <p class="text-xs text-slate-400 mt-1">Email cannot be changed on a faculty license.</p>
+                            </div>
+                            <div class="pt-6 border-t border-slate-100 dark:border-slate-700">
+                                <h3 class="text-lg font-black mb-4 flex items-center gap-2">
+                                    <i class="fa-solid fa-shield-halved text-primary-600"></i> Account management and Privacy verification
+                                </h3>
+                                <div class="p-4 bg-primary-50 dark:bg-primary-900/30 rounded-xl border border-primary-100 dark:border-primary-800/50">
+                                    <p class="text-xs font-bold text-primary-800 dark:text-primary-300 leading-relaxed">
+                                        All analysis is performed directly in your browser. No documents or text are ever uploaded to a server, ensuring 100% privacy and offline capability.
+                                    </p>
+                                </div>
+                            </div>
+                            <button type="submit" class="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold transition-colors">Save Changes</button>
+                        </form>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <h3 class="text-lg font-black mb-6 border-b border-slate-100 dark:border-slate-700 pb-3">Preferences</h3>
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h4 class="font-bold text-slate-800 dark:text-white">Dark Mode</h4>
+                                <p class="text-sm text-slate-500">Toggle dark theme appearance</p>
+                            </div>
+                            <button onclick="document.documentElement.classList.toggle('dark')" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 rounded-lg font-medium text-sm">Toggle</button>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold text-slate-800 dark:text-white">Email Notifications</h4>
+                                <p class="text-sm text-slate-500">Receive weekly scan summaries</p>
+                            </div>
+                            <button class="px-4 py-2 bg-primary-600 text-white rounded-lg font-medium text-sm">Enabled</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const userStr = localStorage.getItem('detectpro_user');
+        if (!userStr) window.location.href = 'index.html';
+        const user = JSON.parse(userStr);
+        document.getElementById('user-name-display').innerText = user.name;
+        document.getElementById('user-initial').innerText = user.name.charAt(0).toUpperCase();
+        document.getElementById('settings-name').innerText = user.name;
+        document.getElementById('settings-email').innerText = user.email;
+        document.getElementById('settings-avatar').innerText = user.name.charAt(0).toUpperCase();
+        document.getElementById('form-name').value = user.name;
+        document.getElementById('form-email').value = user.email;
+
+        function logout() {
+            localStorage.removeItem('detectpro_user');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Scanner - DetectPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.5.1/mammoth.browser.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#f4f7fb', 100: '#e1eaf4', 500: '#2563eb', 600: '#1d4ed8', 900: '#1e3a8a' },
+                    },
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; background-color: #f8fafc; }
+        .textarea-container { transition: all 0.3s ease; }
+        .textarea-container:focus-within { box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.1); border-color: #2563eb; }
+        .spinner { border: 4px solid rgba(255, 255, 255, 0.3); border-radius: 50%; border-top: 4px solid #2563eb; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-slate-900 dark:bg-slate-900 dark:text-white min-h-screen flex flex-col transition-colors duration-300">
+
+    <nav class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="location.href='dashboard.html'">
+                    <div class="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center text-white">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <span class="font-bold text-xl tracking-tight text-slate-900 dark:text-white">DetectPro</span>
+                </div>
+                
+                <div class="hidden md:ml-6 md:flex md:space-x-8 items-center">
+                    <a href="dashboard.html" class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-bold px-1 py-2 border-b-2 border-transparent transition-colors">Dashboard</a>
+                    <a href="demo.html" class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-bold px-1 py-2 border-b-2 border-transparent transition-colors">Demo</a>
+                    <a href="checker.html" class="text-primary-600 dark:text-primary-400 font-bold px-1 py-2 border-b-2 border-primary-600 transition-colors">Checker</a>
+                    <a href="reports.html" class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-bold px-1 py-2 border-b-2 border-transparent transition-colors">History</a>
+                    <a href="settings.html" class="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-bold px-1 py-2 border-b-2 border-transparent transition-colors">Settings</a>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <button onclick="document.documentElement.classList.toggle('dark')" class="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-white transition-colors">
+                        <i class="fa-solid fa-moon dark:hidden text-lg"></i>
+                        <i class="fa-solid fa-sun hidden dark:block text-lg"></i>
+                    </button>
+                    <div class="flex items-center gap-2 pl-4 border-l border-slate-200 dark:border-slate-700 cursor-pointer" onclick="location.href='settings.html'">
+                        <div class="w-8 h-8 rounded-full bg-primary-100 dark:bg-slate-800 flex items-center justify-center text-primary-600 font-black text-sm" id="user-initial">U</div>
+                        <span class="text-sm font-bold hidden sm:block" id="user-name-display">User</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-1 flex flex-col block overflow-y-auto">
+        <div class="bg-white dark:bg-slate-900 py-12 px-4 shadow-sm relative">
+            <div class="max-w-4xl mx-auto text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight mb-4">Deep Scanner</h1>
+                <p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-medium">Input text or upload documents for an instant originality report.</p>
+            </div>
+
+            <div class="max-w-5xl mx-auto">
+                <div class="textarea-container bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-3xl overflow-hidden shadow-lg flex flex-col">
+                    <div class="bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between">
+                        <div class="flex gap-6">
+                            <input type="file" id="file-upload" accept=".txt,.pdf,.docx" class="hidden" onchange="handleFileUpload(event)">
+                            <label for="file-upload" class="cursor-pointer flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-primary-600 dark:text-slate-300 dark:hover:text-primary-400 transition-colors">
+                                <i class="fa-solid fa-cloud-arrow-up text-lg"></i> Upload Document
+                            </label>
+                            <button onclick="runDemo()" class="flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-primary-600 dark:text-slate-300 dark:hover:text-primary-400 transition-colors">
+                                <i class="fa-solid fa-wand-magic-sparkles text-lg"></i> Run Demo Scan
+                            </label>
+                        </div>
+                        <div class="text-xs font-bold text-slate-400 uppercase tracking-wider" id="file-name-display">.pdf, .docx, .txt</div>
+                    </div>
+                    <textarea id="scanner-text" class="w-full h-80 p-8 bg-transparent outline-none resize-none text-slate-800 dark:text-slate-200 text-lg leading-loose placeholder-slate-400 dark:placeholder-slate-500 font-serif" placeholder="Paste your text here..."></textarea>
+                    <div class="bg-white dark:bg-slate-800 px-8 py-5 border-t border-slate-200 dark:border-slate-700 flex justify-end items-center">
+                        <button onclick="startAnalysis()" class="px-10 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-black shadow-lg shadow-primary-600/30 transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-3 text-lg">
+                            Scan Document <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="loading-overlay" class="fixed inset-0 bg-slate-50/90 dark:bg-slate-900/90 z-50 flex flex-col items-center justify-center hidden backdrop-blur-sm">
+        <div class="spinner mb-6"></div>
+        <h2 class="text-2xl font-black text-slate-900 dark:text-white mb-2">Analyzing Text</h2>
+        <p class="text-slate-500 font-medium">Checking reference database for matches...</p>
+    </div>
+
+    <script>
+        const userStr = localStorage.getItem('detectpro_user');
+        if (!userStr) window.location.href = 'index.html';
+        const user = JSON.parse(userStr);
+        document.getElementById('user-name-display').innerText = user.name;
+        document.getElementById('user-initial').innerText = user.name.charAt(0).toUpperCase();
+
+        const Corpus = [
+            { title: "AI in Education", text: "Artificial intelligence (AI) has emerged as a cornerstone of modern technological progress, specifically reconfiguring the educational landscape by enabling personalized learning paths tailored to individual student needs." },
+            { title: "Machine Learning Principles", text: "At its core, machine learning - a critical subset of AI - leverages sophisticated algorithms to parse vast datasets, identifying patterns that allow systems to improve their predictive accuracy autonomously." },
+            { title: "Blockchain Decentralization", text: "Blockchain technology represents a radical departure from centralized database management, offering a robust decentralized framework that ensures data integrity and operational transparency through distributed ledgers." },
+            { title: "Smart Contracts Implementation", text: "The implementation of smart contracts - self-executing agreements with terms written directly into code - further removes the need for traditional intermediaries like banks or legal firms." },
+            { title: "Neural Networks Architecture", text: "Artificial neural networks (ANNs) are sophisticated computational models designed to mimic the structural and functional characteristics of biological neural pathways found in the human brain." },
+            { title: "Quantum Computing Horizons", text: "Quantum computing is poised to redefine the limits of computational complexity by utilizing the principles of quantum mechanics - specifically superposition and entanglement." },
+            { title: "IoT and Connectivity", text: "The Internet of Things (IoT) encompasses a vast network of physical objects embedded with sensors and software for the purpose of connecting and exchanging data with other devices." },
+            { title: "Zero Trust Security", text: "In an era of escalating digital threats, the Zero Trust security model has emerged as a fundamental architectural shift, operating on the principle of 'never trust, always verify'." },
+            { title: "Cloud Infrastructure", text: "Cloud computing has fundamentally transformed how businesses deploy and scale digital services, providing on-demand access to a shared pool of configurable computing resources." },
+            { title: "Deep Learning Features", text: "Advanced techniques such as Deep Learning utilize multiple hidden layers to extract high-level features from raw data, enabling capabilities like facial recognition and medical diagnosis." }
+        ];
+
+        function tokenize(text) { return text.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2); }
+        function calcSimilarity(str1, str2) {
+            const set1 = new Set(tokenize(str1));
+            const setSet2 = new Set(tokenize(str2));
+            const intersect = new Set([...set1].filter(x => setSet2.has(x)));
+            const union = new Set([...set1, ...setSet2]);
+            return union.size === 0 ? 0 : Math.round((intersect.size / union.size) * 100);
+        }
+
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const display = document.getElementById('file-name-display');
+            display.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Extracting...`;
+            try {
+                let text = "";
+                const ext = file.name.split('.').pop().toLowerCase();
+                if (ext === 'txt') { text = await file.text(); } 
+                else if (ext === 'docx') {
+                    const result = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+                    text = result.value;
+                } else if (ext === 'pdf') {
+                    const pdf = await pdfjsLib.getDocument(await file.arrayBuffer()).promise;
+                    for (let i = 1; i <= pdf.numPages; i++) {
+                        const content = await (await pdf.getPage(i)).getTextContent();
+                        text += content.items.map(item => item.str).join(" ") + " ";
+                    }
+                }
+                document.getElementById('scanner-text').value = text;
+                display.innerHTML = `<i class="fa-solid fa-check text-green-500 mr-1"></i> ${file.name} — Scanning...`;
+                startAnalysis();
+            } catch (err) { alert("Error extracting text."); display.innerText = ".pdf, .docx, .txt"; }
+        }
+
+        function runDemo() {
+            document.getElementById('scanner-text').value = `Artificial intelligence is transforming the teaching sector by offering customized learning experiences for pupils everywhere. Furthermore, Neural networks are computing systems inspired by biological neural networks. This sentence is entirely original. Additionally, Blockchain technology offers a decentralized approach to data security, ensuring integrity and transparency.`;
+            document.getElementById('file-name-display').innerText = "Demo text loaded — Scanning...";
+            setTimeout(startAnalysis, 500);
+        }
+
+        function startAnalysis() {
+            const input = document.getElementById('scanner-text').value.trim();
+            if (!input) { alert("Please input text."); return; }
+            document.getElementById('loading-overlay').classList.remove('hidden');
+            setTimeout(() => {
+                const sentences = input.replace(/([.?!])\s*(?=[A-Z])/g, "$1|").split("|").filter(s => s.trim().length > 0);
+                let totalSim = 0; let results = [];
+                sentences.forEach(sentence => {
+                    let maxSim = 0; let matchedDoc = null;
+                    Corpus.forEach(doc => {
+                        let sim = calcSimilarity(sentence, doc.text);
+                        if (sim > maxSim) { maxSim = sim; matchedDoc = doc; }
+                    });
+                    let type = 'none';
+                    if (maxSim >= 85) type = 'exact';
+                    else if (maxSim >= 40) type = 'paraphrase';
+                    results.push({ text: sentence.trim(), type, similarity: maxSim, source: (type !== 'none') ? matchedDoc : null });
+                    totalSim += maxSim;
+                });
+                const plagiarismScore = results.length > 0 ? Math.round(totalSim / results.length) : 0;
+                const report = { 
+                    date: new Date().toLocaleString(), 
+                    textSnippet: input.substring(0, 100) + '...', 
+                    fileName: document.getElementById('file-name-display').innerText.replace(' — Scanning...', '').replace('.pdf, .docx, .txt', 'Manual_Paste'),
+                    fullText: input,
+                    plagiarismScore, 
+                    originalScore: 100 - plagiarismScore, 
+                    results 
+                };
+                let history = JSON.parse(localStorage.getItem('dp_history_v2') || '[]');
+                history.unshift(report);
+                localStorage.setItem('dp_history_v2', JSON.stringify(history));
+                localStorage.setItem('dp_current_report', JSON.stringify(report));
+                window.location.href = 'reports.html';
+            }, 1200);
+        }
+    </script>
+</body>
+</html>

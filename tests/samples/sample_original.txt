@@ -1,0 +1,5 @@
+This is a sample document for testing the plagiarism detection system.
+
+Artificial Intelligence is a branch of computer science that deals with the creation of intelligent machines. Neural networks are one aspect of this, mimicking the way humans learn and process information.
+
+In recent years, transformers have become the standard for natural language tasks.

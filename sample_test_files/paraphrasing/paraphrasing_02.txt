@@ -1,0 +1,9 @@
+Introduction: Distributed ledger frameworks offer a complete break from traditional central authority models, providing a safe way to store records using a network of spread-out computers.
+
+Body 1: Every new entry in the sequence is secured by a unique code tied to the previous record, making the entire history permanent and resistant to fraudulent changes by any single party.
+
+Body 2: The use of programmable deal-making code - often referred to as smart contracts - removes the requirement for traditional middle-men like lawyers or bankers, which significantly lowers the cost of doing business.
+
+Data: Statistically, over $20 billion is now moving through decentralized financial networks every month, a massive increase from just a few years ago.
+
+Conclusion: Even with the current technical hurdles, the move toward distributed trust-building is the most important change in financial records since the invention of the computer.

@@ -1,0 +1,3 @@
+AI is a part of computer science focused on making smart machines. Neural networks are a key part of this field, copying the way people learn and handle data.
+
+Lately, transformer models have become the main tool for processing human language.

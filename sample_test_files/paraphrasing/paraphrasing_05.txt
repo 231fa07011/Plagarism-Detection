@@ -1,0 +1,9 @@
+Introduction: The network of connected household items allows for a seamless exchange of data between appliances over a home Wi-Fi network to make life more convenient.
+
+Body 1: Devices ranging from heaters to smart lights are constant sources of information that help homeowners track how much power they are using and automate their daily routines through apps.
+
+Body 2: To keep things running fast, many of these systems now do their 'thinking' inside the device itself rather than sending everything away to a far-off server, which also helps keep data more private.
+
+Data: Experts believe that within the next few years, there will be over a hundred billion of these smart gadgets working in homes all over the world.
+
+Conclusion: While these systems make life easier, they also require much better security to stop outsiders from interfering with things in the house.

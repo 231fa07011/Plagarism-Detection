@@ -1,0 +1,1 @@
+Machine learning is a subset of artificial intelligence that enables systems to learn from experience without explicit programming. Reinforcement learning, a sub-branch of machine learning, trains agents to take actions in environments to maximize cumulative reward. This approach has achieved superhuman performance in games such as Go, Chess, and Dota 2.

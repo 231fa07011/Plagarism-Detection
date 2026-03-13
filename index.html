@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login & Registration - DetectPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#f4f7fb', 100: '#e1eaf4', 500: '#2563eb', 600: '#1d4ed8', 900: '#1e3a8a' },
+                    },
+                    fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .dark .glass { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 transition-colors duration-300">
+
+    <div class="max-w-md w-full glass rounded-3xl shadow-2xl overflow-hidden p-8 md:p-10">
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-600 text-white shadow-lg mb-6">
+                <i class="fa-solid fa-shield-halved text-3xl"></i>
+            </div>
+            <h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight" id="auth-title">Welcome to DetectPro</h1>
+            <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium" id="auth-subtitle">Secure Login & Registration</p>
+        </div>
+
+        <form id="auth-form" class="space-y-5" onsubmit="handleAuth(event)">
+            <div id="name-field-container">
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">Full Name</label>
+                <div class="relative">
+                    <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="name" class="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-primary-500 outline-none transition-all dark:text-white" placeholder="John Doe">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">Email Address</label>
+                <div class="relative">
+                    <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="email" id="email" required class="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-primary-500 outline-none transition-all dark:text-white" placeholder="faculty@university.edu">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 ml-1">Password</label>
+                <div class="relative">
+                    <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="password" id="password" required class="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl focus:ring-2 focus:ring-primary-500 outline-none transition-all dark:text-white" placeholder="••••••••">
+                </div>
+            </div>
+
+            <button type="submit" class="w-full py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl font-black shadow-lg shadow-primary-600/30 transition-all transform hover:-translate-y-1 active:scale-95 text-lg">
+                <span id="submit-text">Create Account</span>
+            </button>
+        </form>
+
+        <div class="mt-8 text-center">
+            <p class="text-sm font-medium text-slate-500">
+                <span id="toggle-text">Already have an account?</span>
+                <button onclick="toggleAuthMode()" class="text-primary-600 font-bold hover:underline ml-1" id="toggle-btn">Sign In</button>
+            </p>
+        </div>
+        
+        <div class="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800 text-center">
+            <p class="text-[10px] uppercase font-bold tracking-widest text-slate-400">Powered by Local Neural Engine</p>
+        </div>
+    </div>
+
+    <script>
+        let isLogin = false;
+
+        function toggleAuthMode() {
+            isLogin = !isLogin;
+            document.getElementById('name-field-container').classList.toggle('hidden', isLogin);
+            document.getElementById('auth-title').innerText = isLogin ? 'Welcome Back' : 'Welcome to DetectPro';
+            document.getElementById('auth-subtitle').innerText = isLogin ? 'Secure Sign In' : 'Secure Login & Registration';
+            document.getElementById('submit-text').innerText = isLogin ? 'Sign In' : 'Create Account';
+            document.getElementById('toggle-text').innerText = isLogin ? "Don't have an account?" : "Already have an account?";
+            document.getElementById('toggle-btn').innerText = isLogin ? 'Sign Up' : 'Sign In';
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const name = document.getElementById('name').value || 'User';
+            localStorage.setItem('detectpro_user', JSON.stringify({ email, name }));
+            window.location.href = 'dashboard.html';
+        }
+
+        // Redirect if already logged in
+        if (localStorage.getItem('detectpro_user')) {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>

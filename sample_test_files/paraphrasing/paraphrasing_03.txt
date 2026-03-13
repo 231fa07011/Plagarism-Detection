@@ -1,0 +1,9 @@
+Introduction: Synthetic neural architectures are advanced mathematical systems that attempt to replicate the way biological brains process complex sensory information and learn from it.
+
+Body 1: These platforms comprise thousands of interconnected points of processing that work together in layers. Each link has a specific 'weight' that changes as the system tries to get closer to a correct answer.
+
+Body 2: Deep learning strategies use multiple layers to pull focus onto specific features of data, allowing machines to do things like see objects in photos or understand spoken human language with high precision.
+
+Data: Leading researchers have built language systems that use trillions of unique connections, requiring incredible amounts of energy and server space to maintain.
+
+Conclusion: As specialized computer chips for math-heavy tasks get more powerful, the line between machine calculation and human-like understanding is becoming very blurry.

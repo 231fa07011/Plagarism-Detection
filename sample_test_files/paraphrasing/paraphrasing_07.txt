@@ -1,0 +1,9 @@
+Introduction: Using shared remote servers has changed how startups and big companies build their websites by giving them instant access to massive power without having to buy any hardware.
+
+Body 1: Rented power - whether it's for simple file storage or complex math tasks - allows a business to only pay for what they use right now, rather than spending huge amounts of money on their own servers.
+
+Body 2: New ways of building websites that use 'containers' allow developers to update their apps many times a day without causing any crashes for the people visiting the site.
+
+Data: Reports show that over 90% of modern companies now use at least one of the big web-power providers for most of their daily work and customer services.
+
+Conclusion: Moving to these shared web systems is the only way for a modern business to stay fast and competitive in today's global market.

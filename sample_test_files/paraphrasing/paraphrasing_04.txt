@@ -1,0 +1,9 @@
+Introduction: Computing with quantum mechanics is set to change what we thought was possible in mathematics by using the strange properties of subatomic particles to solve previously impossible riddles.
+
+Body 1: Instead of just using zeros and ones, these machines use bits that can be both at the same time. This allows them to search for thousands of solutions to a problem at once.
+
+Body 2: The biggest current obstacle is keeping the machine stable and cold enough to work. Even a tiny bit of heat or outside noise can cause the calculation to fail instantly.
+
+Data: In recent tests, a quantum processor finished a task in under four minutes that would have taken a traditional super-powered computer many thousands of years.
+
+Conclusion: Full mastery of these machines will change everything from how we protect our data to how we discover new life-saving medicines.
