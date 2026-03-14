@@ -1,0 +1,6 @@
+Neural Network Architectural Design
+
+Abstract: A study on deep learning layers and node interactions...
+
+Introduction:
+In this paper, we explore neural network architectural design...

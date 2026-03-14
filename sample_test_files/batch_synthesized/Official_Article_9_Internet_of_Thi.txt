@@ -1,0 +1,6 @@
+Internet of Things (IoT) Vulnerabilities
+
+Abstract: Evaluating edge device security protocols in consumer environments...
+
+Introduction:
+In this paper, we explore internet of things (iot) vulnerabilities...

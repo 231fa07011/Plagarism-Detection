@@ -5,6 +5,7 @@ import { LayoutDashboard, FileText, Settings, History, LogOut, ShieldCheck } fro
 const Sidebar = () => {
   const menuItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
+    { name: 'Templates', icon: Layout, path: '/templates' },
     { name: 'My Scans', icon: History, path: '/history' },
     { name: 'Documents', icon: FileText, path: '/documents' },
     { name: 'Settings', icon: Settings, path: '/settings' },

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Dashboard from './pages/Dashboard'
 import Analysis from './pages/Analysis'
+import Templates from './pages/Templates'
 import Login from './pages/Login'
 import Sidebar from './components/Sidebar'
 import Header from './components/Header'
@@ -22,6 +23,7 @@ function App() {
             <main className="flex-1 overflow-y-auto p-6">
               <Routes>
                 <Route path="/" element={<Dashboard />} />
+                <Route path="/templates" element={<Templates />} />
                 <Route path="/analysis/:id" element={<Analysis />} />
               </Routes>
             </main>

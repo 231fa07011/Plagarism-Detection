@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Text, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
@@ -42,3 +42,14 @@ class Highlight(Base):
     source_text = Column(Text, nullable=True)
     source_title = Column(String, nullable=True)
     scan = relationship("ScanResult", back_populates="highlights")
+
+class DownloadHistory(Base):
+    """Tracks every download action performed on a scan report."""
+    __tablename__ = "download_history"
+    id = Column(Integer, primary_key=True, index=True)
+    scan_id = Column(Integer, ForeignKey("scan_results.id"), nullable=False)
+    document_title = Column(String, nullable=False)
+    paper_size = Column(String, nullable=False)   # A3, A4, A5
+    file_format = Column(String, nullable=False)  # PDF, DOCX
+    downloaded_at = Column(DateTime, default=datetime.utcnow)
+    scan = relationship("ScanResult", backref="downloads")

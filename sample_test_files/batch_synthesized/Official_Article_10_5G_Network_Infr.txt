@@ -1,0 +1,6 @@
+5G Network Infrastructure Topologies
+
+Abstract: An analysis of millimeter wave propagation and small cell deployments...
+
+Introduction:
+In this paper, we explore 5g network infrastructure topologies...

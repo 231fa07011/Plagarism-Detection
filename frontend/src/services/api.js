@@ -35,4 +35,8 @@ export const authService = {
   signup: (userData) => api.post('/auth/signup', userData),
 };
 
+export const chatbotService = {
+  sendMessage: (message, context) => api.post('/chatbot', { message, context }),
+};
+
 export default api;

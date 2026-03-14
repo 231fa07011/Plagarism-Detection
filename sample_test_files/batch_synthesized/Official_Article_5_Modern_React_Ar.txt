@@ -1,0 +1,6 @@
+Modern React Architecture
+
+Abstract: State management in complex frontend ecosystems utilizing hooks...
+
+Introduction:
+In this paper, we explore modern react architecture...

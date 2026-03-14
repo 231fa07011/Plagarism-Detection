@@ -2,12 +2,17 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import router as api_router
 from app.core.config import settings
+from app.db.session import engine
+from app.models.database import Base
 
 app = FastAPI(
     title="Professional Plagiarism Detection API",
     description="Backend service for detecting exact and paraphrased plagiarism using modern NLP.",
     version="1.0.0"
 )
+
+# Create database tables
+Base.metadata.create_all(bind=engine)
 
 # Set up CORS
 app.add_middleware(

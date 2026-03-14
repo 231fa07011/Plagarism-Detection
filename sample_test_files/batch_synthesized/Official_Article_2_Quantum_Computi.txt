@@ -1,0 +1,6 @@
+Quantum Computing Feasibility in Modern Era
+
+Abstract: Investigating qubit stability and error correcting algorithms in real systems...
+
+Introduction:
+In this paper, we explore quantum computing feasibility in modern era...

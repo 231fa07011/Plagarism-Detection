@@ -56,10 +56,26 @@ class PlagiarismDetector:
             elif score > settings.SIMILARITY_THRESHOLD_PARA:
                 match_type = "paraphrase"
                 
+            improvement = None
+            if match_type != "none":
+                # Simulated AI rewrite logic
+                words = sentence.split()
+                if len(words) > 3:
+                    # Very basic simulation: Reverse some words or substitute
+                    improvement = f"AI Rewrite: {sentence[::-1][:50]}... (Simulated)"
+                    # Better simulation for the demo:
+                    if "neural networks" in sentence.lower():
+                        improvement = "Computational neural architectures represent information processing systems that draw inspiration from biological neural frameworks."
+                    elif "artificial intelligence" in sentence.lower():
+                        improvement = "Synthetic cognition represents a paradigm shift in computational methodologies."
+                    else:
+                        improvement = f"Refined version: This section has been synthetically restructured to ensure academic uniqueness while preserving the core premise of '{sentence[:20]}...'."
+
             results.append({
                 "sentence": sentence,
                 "similarity": round(score * 100, 2),
                 "matchType": match_type,
+                "improvement": improvement,
                 "source": {
                     "title": "Academic Source " + str(match_idx.item() + 1),
                     "text": mock_corpus[match_idx]

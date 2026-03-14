@@ -1,0 +1,6 @@
+Computer Vision and Autonomous Navigation
+
+Abstract: LiDAR data integration with YOLO algorithms for self-driving vehicles...
+
+Introduction:
+In this paper, we explore computer vision and autonomous navigation...
