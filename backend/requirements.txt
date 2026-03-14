@@ -11,7 +11,7 @@ psycopg2-binary
 python-jose[cryptography]
 passlib[bcrypt]
 python-dotenv
-cors
+pytest
 python-docx
 PyPDF2
 scipy

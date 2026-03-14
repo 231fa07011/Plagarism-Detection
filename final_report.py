@@ -7,10 +7,13 @@ def print_header(title):
     print(f" {title.upper()} ".center(80, "="))
     print("="*80)
 
+# Get the directory where this script is located
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 def main():
     # 1. Official Papers Report
     print_header("Official Academic Papers Collection (15 Documents)")
-    papers_dir = r"c:\Users\MY PC\OneDrive\Desktop\Plagarism-Detection\sample_test_files\A3_A4_A5_Official_Papers"
+    papers_dir = os.path.join(BASE_DIR, "sample_test_files", "A3_A4_A5_Official_Papers")
     
     if os.path.exists(papers_dir):
         files = os.listdir(papers_dir)
@@ -40,7 +43,7 @@ def main():
 
     # 3. Database Download History
     print_header("Database Download History (Persistent Storage)")
-    db_path = r"c:\Users\MY PC\OneDrive\Desktop\Plagarism-Detection\download_history_demo.db"
+    db_path = os.path.join(BASE_DIR, "download_history_demo.db")
     
     if os.path.exists(db_path):
         try:

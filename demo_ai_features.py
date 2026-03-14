@@ -56,7 +56,9 @@ for sz, name, fmt in templates:
 print("\n[SECTION 5] GENERATED OFFICIAL PAPERS (A3, A4, A5)")
 print("-" * 40)
 import os
-papers_dir = r"c:\Users\MY PC\OneDrive\Desktop\Plagarism-Detection\sample_test_files\A3_A4_A5_Official_Papers"
+# Get the directory where this script is located
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+papers_dir = os.path.join(BASE_DIR, "sample_test_files", "A3_A4_A5_Official_Papers")
 if os.path.exists(papers_dir):
     files = os.listdir(papers_dir)
     print(f"Found {len(files)} official files in directory:")

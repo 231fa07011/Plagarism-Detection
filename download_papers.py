@@ -5,7 +5,9 @@ from docx import Document
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-out_dir = r"c:\Users\MY PC\OneDrive\Desktop\Plagarism-Detection\sample_test_files\real_papers"
+# Get the directory where this script is located
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+out_dir = os.path.join(BASE_DIR, "sample_test_files", "real_papers")
 os.makedirs(out_dir, exist_ok=True)
 
 downloads = [

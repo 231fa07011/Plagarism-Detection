@@ -25,7 +25,9 @@ from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 # --- CONFIG ---
-BASE_DIR = r"C:\Users\MY PC\OneDrive\Desktop\Plagarism-Detection\sample_test_files"
+# Get the directory where this script is located
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.join(ROOT_DIR, "sample_test_files")
 SUBFOLDERS = ["exact_copy", "paraphrasing", "all_flagged", "original_content"]
 
 for sub in SUBFOLDERS:

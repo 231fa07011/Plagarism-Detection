@@ -2,8 +2,11 @@ import os
 import sqlite3
 
 def main():
+    # Get the directory where this script is located
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    
     print("--- OFFICIAL PAPERS COLLECTION ---")
-    path = r"c:\Users\MY PC\OneDrive\Desktop\Plagarism-Detection\sample_test_files\A3_A4_A5_Official_Papers"
+    path = os.path.join(BASE_DIR, "sample_test_files", "A3_A4_A5_Official_Papers")
     if os.path.exists(path):
         files = os.listdir(path)
         print("Total Files: " + str(len(files)))
@@ -18,7 +21,7 @@ def main():
     print("Final Score: 0% Similarity")
 
     print("\n--- DATABASE DOWNLOAD HISTORY ---")
-    db = r"c:\Users\MY PC\OneDrive\Desktop\Plagarism-Detection\download_history_demo.db"
+    db = os.path.join(BASE_DIR, "download_history_demo.db")
     if os.path.exists(db):
         conn = sqlite3.connect(db)
         cur = conn.cursor()
