@@ -1,234 +1,372 @@
-/* 
-   DetectPro AI - Professional Global Chatbot Suite
-   Fully Functional, Mobile-Responsive, Persistent History
+/*
+   DetectPro AI Chatbot
+   ChatGPT-style, no login, no API key — just ask & get answers
+   Free AI via Pollinations.ai
 */
+(function () {
 
-(function() {
-    // 1. Premium Styles (Including Mobile Responsiveness)
+    // ── Styles ───────────────────────────────────────────────
     const style = document.createElement('style');
     style.innerHTML = `
-        :root { --dp-blue: #2563eb; --dp-dark-blue: #1d4ed8; }
-        
-        .dp-chat-trigger { 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            z-index: 10000; 
-            width: 64px; height: 64px;
+        #dp-fab {
+            position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+            width: 60px; height: 60px; border-radius: 50%;
+            background: linear-gradient(135deg,#2563eb,#1d4ed8);
+            color: #fff; border: none; cursor: pointer;
+            box-shadow: 0 8px 30px rgba(37,99,235,0.45);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+            transition: transform .35s cubic-bezier(.175,.885,.32,1.275), box-shadow .3s;
         }
-        .dp-chat-trigger:hover { transform: scale(1.1) rotate(5deg); }
-        
-        .dp-chat-window { 
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
-            z-index: 10000; 
-            width: 420px; 
-            max-width: 90vw;
-            height: 600px; 
-            max-height: 80vh;
-            transform-origin: bottom right; 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        }
-        
-        .dp-chat-window.hidden { 
-            transform: scale(0.8) translateY(100px); 
-            opacity: 0; 
-            pointer-events: none; 
-        }
-        
-        .dp-message { 
-            animation: dpFadeIn 0.3s ease-out forwards; 
-            max-width: 85%; 
-            word-wrap: break-word;
-        }
-        
-        @keyframes dpFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .dp-markdown h3 { font-weight: 800; margin-bottom: 8px; font-size: 15px; color: #1e3a8a; display: block; }
-        .dp-markdown p { margin-bottom: 8px; }
-        .dp-markdown ul { margin-left: 18px; margin-bottom: 8px; list-style-type: disc; }
-        .dp-markdown li { margin-bottom: 4px; }
-        .dark .dp-markdown h3 { color: #60a5fa; }
+        #dp-fab:hover { transform: scale(1.12); box-shadow: 0 12px 40px rgba(37,99,235,0.55); }
 
-        .dp-typing-dot { animation: dpTyping 1.4s infinite; opacity: 0.3; font-size: 24px; line-height: 0; }
-        .dp-typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .dp-typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes dpTyping { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-        
-        .dp-scrollbar::-webkit-scrollbar { width: 4px; }
-        .dp-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-        
-        @media (max-width: 480px) {
-            .dp-chat-window { right: 10px; bottom: 90px; width: calc(100vw - 20px); height: 500px; }
-            .dp-chat-trigger { right: 20px; bottom: 20px; }
+        #dp-box {
+            position: fixed; bottom: 102px; right: 28px; z-index: 9999;
+            width: 420px; max-width: calc(100vw - 32px);
+            height: 580px; max-height: calc(100vh - 130px);
+            border-radius: 22px;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.18);
+            display: flex; flex-direction: column; overflow: hidden;
+            transition: opacity .3s, transform .35s cubic-bezier(.4,0,.2,1);
+        }
+        #dp-box.dp-hidden { opacity:0; transform: translateY(18px) scale(0.97); pointer-events:none; }
+        .dark #dp-box   { background:#0f172a; border-color:#1e293b; }
+
+        /* Header */
+        #dp-head {
+            background: linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);
+            padding: 16px 18px; display: flex; align-items: center; gap: 12px;
+            flex-shrink: 0;
+        }
+        #dp-head-avatar {
+            width: 38px; height: 38px; border-radius: 12px;
+            background: rgba(255,255,255,.18);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; color: #fff; flex-shrink: 0;
+        }
+        #dp-head-info { flex: 1; }
+        #dp-head-title  { font-weight:800; font-size:14px; color:#fff; font-family:Inter,system-ui,sans-serif; }
+        #dp-head-status { font-size:10px; color:rgba(255,255,255,.75); font-weight:600; font-family:Inter,system-ui,sans-serif; display:flex; align-items:center; gap:5px; margin-top:2px; }
+        .dp-dot { width:7px; height:7px; border-radius:50%; background:#4ade80; animation: dpPulse 2s infinite; }
+        @keyframes dpPulse { 0%,100%{opacity:1;} 50%{opacity:.4;} }
+
+        #dp-head-btns { display:flex; gap:4px; }
+        .dp-hbtn {
+            width:30px; height:30px; border-radius:8px; border:none; cursor:pointer;
+            background:rgba(255,255,255,.12); color:#fff; font-size:12px;
+            display:flex; align-items:center; justify-content:center;
+            transition: background .2s;
+        }
+        .dp-hbtn:hover { background:rgba(255,255,255,.25); }
+
+        /* Messages */
+        #dp-msgs {
+            flex:1; overflow-y:auto; padding:10px 16px; display:flex;
+            flex-direction:column; gap:14px;
+        }
+        #dp-msgs::-webkit-scrollbar { width:4px; }
+        #dp-msgs::-webkit-scrollbar-thumb { background:#e2e8f0; border-radius:4px; }
+        .dark #dp-msgs::-webkit-scrollbar-thumb { background:#334155; }
+
+        .dp-msg {
+            max-width:88%; font-size:13.5px; line-height:1.65;
+            font-family:Inter,system-ui,sans-serif;
+            animation: dpSlide .25s ease-out;
+        }
+        @keyframes dpSlide { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+        .dp-msg-user {
+            align-self:flex-end;
+            background: linear-gradient(135deg,#2563eb,#1d4ed8);
+            color:#fff; padding:11px 16px; border-radius:18px 18px 4px 18px;
+            font-weight:600; word-break:break-word;
+        }
+        .dp-msg-ai {
+            align-self:flex-start;
+            background:#f1f5f9; color:#1e293b;
+            padding:12px 16px; border-radius:18px 18px 18px 4px;
+            word-break:break-word;
+        }
+        .dark .dp-msg-ai { background:#1e293b; color:#e2e8f0; }
+
+        .dp-msg-ai h3     { font-weight:800; font-size:13px; color:#1e3a8a; margin-bottom:5px; }
+        .dp-msg-ai p      { margin-bottom:5px; }
+        .dp-msg-ai ul     { margin-left:16px; list-style:disc; margin-bottom:6px; }
+        .dp-msg-ai li     { margin-bottom:3px; }
+        .dp-msg-ai strong { font-weight:700; }
+        .dp-msg-ai code   { background:#e2e8f0; padding:1px 5px; border-radius:4px; font-size:11.5px; font-family:monospace; }
+        .dp-msg-ai pre    { background:#e2e8f0; padding:10px 12px; border-radius:10px; font-size:11px; overflow-x:auto; margin:6px 0; font-family:monospace; }
+        .dark .dp-msg-ai h3   { color:#93c5fd; }
+        .dark .dp-msg-ai code { background:#0f172a; }
+        .dark .dp-msg-ai pre  { background:#0f172a; color:#e2e8f0; }
+
+        /* Typing */
+        .dp-typing { display:flex; gap:5px; align-items:center; padding:12px 16px; }
+        .dp-tdot { width:7px; height:7px; border-radius:50%; background:#94a3b8; animation:dpBounce 1.4s infinite; }
+        .dp-tdot:nth-child(2){animation-delay:.2s}
+        .dp-tdot:nth-child(3){animation-delay:.4s}
+        @keyframes dpBounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-7px)}}
+
+        /* Input */
+        #dp-foot {
+            padding:12px 14px; border-top:1px solid #f1f5f9;
+            background:#fff; flex-shrink:0;
+        }
+        .dark #dp-foot { background:#0f172a; border-color:#1e293b; }
+        #dp-form { display:flex; gap:8px; align-items:flex-end; }
+        #dp-input {
+            flex:1; background:#f8fafc; border:2px solid #e2e8f0;
+            border-radius:14px; padding:10px 14px; font-size:13px;
+            font-family:Inter,system-ui,sans-serif; outline:none;
+            resize:none; max-height:100px; color:#1e293b;
+            transition: border-color .2s;
+            line-height:1.5;
+        }
+        .dark #dp-input { background:#1e293b; border-color:#334155; color:#e2e8f0; }
+        #dp-input:focus { border-color:#2563eb; }
+        #dp-input::placeholder { color:#94a3b8; }
+        #dp-send-btn {
+            width:40px; height:40px; flex-shrink:0;
+            border-radius:12px; border:none; cursor:pointer;
+            background:#2563eb; color:#fff; font-size:14px;
+            display:flex; align-items:center; justify-content:center;
+            transition: background .2s, transform .15s;
+            box-shadow:0 4px 12px rgba(37,99,235,.35);
+        }
+        #dp-send-btn:hover { background:#1d4ed8; }
+        #dp-send-btn:active { transform:scale(.92); }
+        #dp-send-btn:disabled { background:#94a3b8; cursor:not-allowed; box-shadow:none; }
+        #dp-foot-note { text-align:center; font-size:9px; color:#94a3b8; font-family:Inter,system-ui,sans-serif; font-weight:600; letter-spacing:.05em; text-transform:uppercase; margin-top:7px; }
+
+        @media(max-width:480px){
+            #dp-box { right:8px; bottom:90px; width:calc(100vw - 16px); height:510px; }
+            #dp-fab { right:16px; bottom:16px; }
         }
     `;
     document.head.appendChild(style);
 
-    // 2. Chat UI Generation
-    const chatContainer = document.createElement('div');
-    chatContainer.id = 'dp-chatbot-app';
-    chatContainer.innerHTML = `
-        <!-- Floating Trigger -->
-        <button id="dp-trigger" class="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center dp-chat-trigger">
-            <i class="fa-solid fa-robot text-2xl" id="dp-icon"></i>
-        </button>
+    // ── DOM Inject ────────────────────────────────────────────
+    const root = document.createElement('div');
+    root.innerHTML = `
+    <button id="dp-fab" title="Chat with DetectPro AI">
+        <i class="fa-solid fa-robot"></i>
+    </button>
 
-        <!-- Chat Window -->
-        <div id="dp-window" class="fixed bottom-28 right-8 bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-200 dark:border-slate-800 hidden flex flex-col overflow-hidden dp-chat-window">
-            
-            <!-- Header -->
-            <div class="bg-blue-600 p-6 text-white flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                        <i class="fa-solid fa-brain"></i>
-                    </div>
-                    <div>
-                        <div class="font-black text-sm">DetectPro AI</div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>
-                            <span class="text-[10px] font-bold opacity-80 uppercase tracking-widest">Always Online</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button id="dp-clear" class="hover:bg-white/10 w-8 h-8 rounded-lg transition-colors" title="New Session"><i class="fa-solid fa-rotate-left"></i></button>
-                    <button id="dp-close" class="hover:bg-white/10 w-8 h-8 rounded-lg transition-colors"><i class="fa-solid fa-xmark"></i></button>
-                </div>
+    <div id="dp-box" class="dp-hidden">
+        <div id="dp-head">
+            <div id="dp-head-avatar"><i class="fa-solid fa-brain"></i></div>
+            <div id="dp-head-info">
+                <div id="dp-head-title">DetectPro AI</div>
+                <div id="dp-head-status"><span class="dp-dot"></span> Always ready · Free AI</div>
             </div>
-
-            <!-- Messages Area -->
-            <div id="dp-messages" class="flex-1 p-6 overflow-y-auto space-y-6 bg-slate-50 dark:bg-slate-950/30 dp-scrollbar">
-                <!-- Welcome label -->
-                <div class="text-center opacity-30 text-[9px] font-black uppercase tracking-[0.3em] py-2">Encryption Active</div>
-            </div>
-
-            <!-- Input Area -->
-            <div class="p-6 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
-                <div class="flex gap-2">
-                    <input type="text" id="dp-input" class="flex-1 bg-slate-50 dark:bg-slate-800 border-2 border-transparent focus:border-blue-500 rounded-2xl px-5 py-3 text-sm font-medium outline-none transition-all dark:text-white" placeholder="Ask your research query...">
-                    <button id="dp-send" class="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center hover:bg-blue-700 active:scale-90 transition-all shadow-lg shadow-blue-500/30">
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </button>
-                </div>
-                <p class="text-[9px] text-center mt-3 text-slate-400 font-bold uppercase tracking-widest">Real-time Academic Intelligence Core</p>
+            <div id="dp-head-btns">
+                <button class="dp-hbtn" id="dp-clear-btn" title="New Chat"><i class="fa-solid fa-rotate-left"></i></button>
+                <button class="dp-hbtn" id="dp-close-btn" title="Close"><i class="fa-solid fa-xmark"></i></button>
             </div>
         </div>
+
+        <div id="dp-msgs"></div>
+
+        <div id="dp-foot">
+            <div id="dp-form">
+                <textarea id="dp-input" rows="1" placeholder="Ask anything..."></textarea>
+                <button id="dp-send-btn" title="Send"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+            <div id="dp-foot-note">Powered by Pollinations AI · No login required</div>
+        </div>
+    </div>
     `;
-    document.body.appendChild(chatContainer);
+    document.body.appendChild(root);
 
-    // 3. Logic & History Implementation
-    const trigger = document.getElementById('dp-trigger');
-    const windowEl = document.getElementById('dp-window');
-    const inputField = document.getElementById('dp-input');
-    const sendBtn = document.getElementById('dp-send');
-    const messagesBox = document.getElementById('dp-messages');
-    const closeBtn = document.getElementById('dp-close');
-    const clearBtn = document.getElementById('dp-clear');
+    // ── Config ────────────────────────────────────────────────
+    const SYSTEM = `You are DetectPro AI, a helpful, knowledgeable assistant specializing in academic integrity and plagiarism detection. You give clear, accurate, well-structured answers. You can help with:
+- Plagiarism detection, explaining similarity scores
+- Academic writing, paraphrasing, grammar
+- Research tips and citation guidance
+- General knowledge questions
+Be clear, concise, and always give a complete, accurate answer.`;
 
-    let history = JSON.parse(localStorage.getItem('dp_chat_final') || '[]');
+    // ── State ─────────────────────────────────────────────────
+    let isOpen    = false;
+    let isBusy    = false;
+    let history   = JSON.parse(localStorage.getItem('dp_history') || '[]');
 
-    function init() {
+    // ── Refs ──────────────────────────────────────────────────
+    const fab      = document.getElementById('dp-fab');
+    const box      = document.getElementById('dp-box');
+    const msgs     = document.getElementById('dp-msgs');
+    const input    = document.getElementById('dp-input');
+    const sendBtn  = document.getElementById('dp-send-btn');
+    const clearBtn = document.getElementById('dp-clear-btn');
+    const closeBtn = document.getElementById('dp-close-btn');
+
+    // ── Boot ──────────────────────────────────────────────────
+    function boot() {
+        // Restore or welcome
         if (history.length === 0) {
-            addMessage("### 👋 Welcome to DetectPro AI!\nI'm your dedicated research assistant. Use me to **analyze plagiarism**, **rewrite complex sentences**, or **fix grammar**.", 'ai', false);
+            pushBotBubble(`👋 **Hi! I'm DetectPro AI.**\n\nAsk me anything — plagiarism, academic writing, research tips, or any general question. I'll give you a clear, accurate answer.\n\nJust type below! 💬`);
         } else {
-            history.forEach(m => renderMessage(m.text, m.type));
+            history.forEach(m => renderBubble(m.role === 'user' ? 'user' : 'ai', m.content, false));
         }
 
-        trigger.onclick = () => windowEl.classList.toggle('hidden');
-        closeBtn.onclick = () => windowEl.classList.add('hidden');
-        clearBtn.onclick = clearHistory;
-        sendBtn.onclick = sendMessage;
-        inputField.onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
-        
-        messagesBox.scrollTop = messagesBox.scrollHeight;
+        // Events
+        fab.onclick      = toggle;
+        closeBtn.onclick = () => setOpen(false);
+        clearBtn.onclick = clearChat;
+        sendBtn.onclick  = send;
+
+        input.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+        });
+        input.addEventListener('input', () => {
+            input.style.height = 'auto';
+            input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+        });
+
+        scrollBottom();
     }
 
-    function clearHistory() {
-        if(confirm("New research session? This will clear our current chat history.")) {
-            history = [];
-            localStorage.removeItem('dp_chat_final');
-            messagesBox.innerHTML = '<div class="text-center opacity-30 text-[9px] font-black uppercase tracking-[0.3em] py-2">Session Reset</div>';
-            addMessage("Session reset. How can I help with your paper now?", 'ai', false);
-        }
+    function toggle() { setOpen(!isOpen); }
+    function setOpen(v) {
+        isOpen = v;
+        box.classList.toggle('dp-hidden', !v);
+        if (v) { scrollBottom(); input.focus(); }
     }
 
-    async function sendMessage() {
-        const text = inputField.value.trim();
-        if (!text) return;
+    function clearChat() {
+        if (!confirm('Start a new chat?')) return;
+        history = [];
+        localStorage.removeItem('dp_history');
+        msgs.innerHTML = '';
+        pushBotBubble('New chat started! What would you like to know?');
+    }
 
-        addMessage(text, 'user');
-        inputField.value = '';
+    // ── Send ──────────────────────────────────────────────────
+    async function send() {
+        const q = input.value.trim();
+        if (!q || isBusy) return;
 
-        const typing = showTyping();
+        isBusy = true;
+        sendBtn.disabled = true;
+        input.value = '';
+        input.style.height = 'auto';
+
+        // User bubble
+        renderBubble('user', q);
+        history.push({ role: 'user', content: q });
+        save();
+
+        // Typing indicator
+        const typingEl = addTyping();
 
         try {
-            const resp = await fetch('http://127.0.0.1:8000/api/chatbot/', {
+            const reply = await callAI(q);
+            typingEl.remove();
+            renderBubble('ai', reply);
+            history.push({ role: 'assistant', content: reply });
+            save();
+        } catch (err) {
+            typingEl.remove();
+            renderBubble('ai', `⚠️ **Couldn't get a response.**\n\n${err.message}\n\n→ Try a different model above, or rephrase your question.`);
+        }
+
+        isBusy = false;
+        sendBtn.disabled = false;
+        input.focus();
+    }
+
+    async function callAI(question) {
+        // Build short context (last 6 exchanges)
+        const ctx = history.slice(-6).map(m =>
+            (m.role === 'user' ? 'Human: ' : 'AI: ') + m.content
+        ).join('\n');
+
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 30000);
+
+        let response;
+        try {
+            response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: text, context: document.title })
+                body: JSON.stringify({ message: question, context: ctx }),
+                signal: controller.signal
             });
-            const data = await resp.json();
-            messagesBox.removeChild(typing);
-            await streamAI(data.reply);
-        } catch (e) {
-            messagesBox.removeChild(typing);
-            await streamAI("I'm having trouble reaching my academic servers. Please check if the backend is running at `127.0.0.1:8000`. \n\nIn the meantime, how can I help with your writing?");
-        }
-    }
-
-    function addMessage(text, type, save = true) {
-        renderMessage(text, type);
-        if (save) {
-            history.push({ text, type });
-            localStorage.setItem('dp_chat_final', JSON.stringify(history));
-        }
-    }
-
-    function renderMessage(text, type) {
-        const div = document.createElement('div');
-        div.className = `dp-message p-5 rounded-[1.8rem] text-sm shadow-sm ${type === 'user' 
-            ? 'bg-blue-600 text-white ml-auto rounded-tr-none font-bold' 
-            : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 mr-auto rounded-tl-none border border-slate-100 dark:border-slate-800 dp-markdown'}`;
-        
-        if (type === 'ai') div.innerHTML = parseMD(text);
-        else div.innerText = text;
-
-        messagesBox.appendChild(div);
-        messagesBox.scrollTop = messagesBox.scrollHeight;
-    }
-
-    async function streamAI(text) {
-        const div = document.createElement('div');
-        div.className = 'dp-message p-5 rounded-[1.8rem] rounded-tl-none text-sm bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 mr-auto border border-slate-100 dark:border-slate-800 shadow-sm dp-markdown';
-        messagesBox.appendChild(div);
-
-        const words = text.split(' ');
-        let current = "";
-        for (let i = 0; i < words.length; i++) {
-            current += words[i] + " ";
-            div.innerHTML = parseMD(current);
-            messagesBox.scrollTop = messagesBox.scrollHeight;
-            await new Promise(r => setTimeout(r, 30 + Math.random() * 30));
+        } finally {
+            clearTimeout(timeout);
         }
 
-        history.push({ text, type: 'ai' });
-        localStorage.setItem('dp_chat_final', JSON.stringify(history));
+        const data = await response.json();
+
+        if (!response.ok || data.error) {
+            throw new Error(data.error || `Server error ${response.status}`);
+        }
+
+        if (!data.reply || data.reply.trim().length < 2) {
+            throw new Error('Empty response. Please try again.');
+        }
+
+        return data.reply.trim();
     }
 
-    function parseMD(text) {
-        return text
-            .replace(/### (.*)/g, '<h3>$1</h3>')
-            .replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>')
-            .replace(/\* (.*)/g, '<li>$1</li>')
-            .split('\n').map(l => l.includes('<li>') ? l : `<p>${l}</p>`).join('');
-    }
-
-    function showTyping() {
+    // ── Render ────────────────────────────────────────────────
+    function renderBubble(role, text, scroll = true) {
         const div = document.createElement('div');
-        div.className = 'dp-message p-4 rounded-2xl rounded-tl-none bg-white dark:bg-slate-800 text-slate-400 mr-auto border border-slate-100 dark:border-slate-800 flex gap-1.5 items-center';
-        div.innerHTML = '<span class="dp-typing-dot">.</span><span class="dp-typing-dot">.</span><span class="dp-typing-dot">.</span>';
-        messagesBox.appendChild(div);
-        messagesBox.scrollTop = messagesBox.scrollHeight;
+        div.className = `dp-msg ${role === 'user' ? 'dp-msg-user' : 'dp-msg-ai'}`;
+        if (role === 'ai') div.innerHTML = md(text);
+        else div.textContent = text;
+        msgs.appendChild(div);
+        if (scroll) scrollBottom();
         return div;
     }
 
-    init();
+    function pushBotBubble(text) {
+        renderBubble('ai', text);
+    }
+
+    function addTyping() {
+        const div = document.createElement('div');
+        div.className = 'dp-msg dp-msg-ai dp-typing';
+        div.innerHTML = '<span class="dp-tdot"></span><span class="dp-tdot"></span><span class="dp-tdot"></span>';
+        msgs.appendChild(div);
+        scrollBottom();
+        return div;
+    }
+
+    function scrollBottom() {
+        msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function save() {
+        // Keep last 40 messages max
+        if (history.length > 40) history = history.slice(-40);
+        localStorage.setItem('dp_history', JSON.stringify(history));
+    }
+
+    // ── Markdown parser ───────────────────────────────────────
+    function md(text) {
+        return text
+            .replace(/```[\w]*\n?([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+            .replace(/`([^`]+)`/g, '<code>$1</code>')
+            .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+            .replace(/^## (.+)$/gm, '<h3>$1</h3>')
+            .replace(/^# (.+)$/gm, '<h3>$1</h3>')
+            .replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*([^*\n]+)\*/g, '<em>$1</em>')
+            .replace(/^[-*] (.+)$/gm, '<li>$1</li>')
+            .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>')
+            .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+            .split('\n')
+            .map(l => {
+                const t = l.trim();
+                if (!t) return '';
+                if (/^<(h[123]|ul|li|pre|p)/.test(t)) return t;
+                return `<p>${t}</p>`;
+            })
+            .join('');
+    }
+
+    boot();
 })();
