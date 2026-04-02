@@ -273,10 +273,11 @@
                 if (isHighlighted) {
                     if (m.type === 'exact') color = 'bg-red-100 text-red-900 border-red-200';
                     else if (m.type === 'paraphrase') color = 'bg-orange-100 text-orange-900 border-orange-200';
+                    else if (m.type === 'potential') color = 'bg-amber-50 text-amber-900 border-amber-100';
                 }
                 
                 const cursor = isHighlighted && m.type !== 'none' ? 'cursor-help' : '';
-                const title = isHighlighted && m.source ? `title="Source: ${m.source.title}"` : '';
+                const title = isHighlighted && m.source ? `title="[${Math.round(m.similarity)}%] Source: ${m.source.title}"` : '';
                 const opacity = (!isHighlighted && m.type !== 'none') ? 'opacity-40 grayscale' : '';
                 
                 const span = `<span class="px-1 rounded-md border-b-2 ${color} ${cursor} ${opacity} transition-all duration-300" ${title}>${m.text}</span> `;

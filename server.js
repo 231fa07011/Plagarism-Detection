@@ -124,50 +124,6 @@ app.post('/api/analyze', (req, res) => {
     });
 });
 
-// 3. AI Chat Proxy (server-side → no CORS)
-app.post('/api/chat', async (req, res) => {
-    const { message, model = 'openai', context = '' } = req.body;
-    if (!message) return res.status(400).json({ error: 'message is required' });
-
-    const SYSTEM = `You are DetectPro AI, a helpful and knowledgeable assistant. You give clear, accurate, complete answers to any question asked. Be concise yet thorough. Format responses with markdown when helpful.`;
-
-    const prompt = context
-        ? `${context}\nHuman: ${message}\nAI:`
-        : message;
-
-    const encoded = encodeURIComponent(prompt);
-    const sysEncoded = encodeURIComponent(SYSTEM);
-    const url = `https://text.pollinations.ai/${encoded}?model=${model}&system=${sysEncoded}&seed=${Date.now() % 99999}`;
-
-    try {
-        const https = require('https');
-        const data = await new Promise((resolve, reject) => {
-            https.get(url, (resp) => {
-                let raw = '';
-                resp.on('data', chunk => raw += chunk);
-                resp.on('end', () => resolve(raw));
-                resp.on('error', reject);
-            }).on('error', reject);
-        });
-
-        // Strip any Pollinations notices
-        const clean = data
-            .replace(/⚠️ IMPORTANT NOTICE ⚠️[\s\S]*?work normally\./gi, '')
-            .replace(/The Pollinations legacy text API[\s\S]*?work normally\./gi, '')
-            .replace(/Please migrate to[\s\S]*?enter\.pollinations\.ai[\s\S]*?\n*/gi, '')
-            .replace(/Note: Anonymous requests[\s\S]*?work normally\.\n*/gi, '')
-            .trim();
-
-        if (!clean || clean.length < 2) {
-            return res.status(502).json({ error: 'Empty response from AI' });
-        }
-
-        res.json({ reply: clean });
-    } catch (err) {
-        res.status(502).json({ error: 'AI service unreachable: ' + err.message });
-    }
-});
-
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
